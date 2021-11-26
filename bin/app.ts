@@ -9,7 +9,9 @@ class AwsSnsToDiscordStack extends cdk.Stack {
     })
 
     new AwsSnsToDiscord(this, 'AwsSnsToDiscord', {
-      existingTopics: process.env.EXISTING_TOPICS?.split(','),
+      existingTopics: process.env.EXISTING_TOPICS?.split(',').map(
+        (resource) => ({ resource })
+      ),
       discordWebhookUrls: process.env.DISCORD_WEBHOOK_URLS?.split(',') ?? [],
       lambdaFunctionProps: { functionName: 'aws-sns-to-discord' },
     })

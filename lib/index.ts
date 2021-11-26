@@ -7,11 +7,8 @@ import * as cdk from '@aws-cdk/core'
 
 import { validateDiscordConfig } from './discord'
 
-type ExistingTopic =
-  | sns.ITopic
-  | ExistingTopicArnOrName
-  | ExistingTopicArnComponents
-type ExistingTopicArnOrName = string
+type ExistingTopic = sns.ITopic | ExistingTopicArn | ExistingTopicArnComponents
+type ExistingTopicArn = string
 type ExistingTopicArnComponents = Omit<
   cdk.ArnComponents,
   'service' | 'resourceName'
@@ -26,7 +23,7 @@ export interface AwsSnsToDiscordProps {
    *
    * Events that are sent to these SNS topics will be summarized and sent to Discord by the Lambda function.
    *
-   * Each SNS topic can be provided as an SNS Topic object, an ARN string, an ArnComponents object or a SNS Topic name.
+   * Each SNS topic can be provided as an SNS Topic object, an ARN string or ArnComponents object.
    *
    * @default - The Lambda function will not be subscribed to any SNS topics by this construct.
    */
@@ -102,18 +99,15 @@ export class AwsSnsToDiscord extends cdk.Construct {
     }
     const topicArn = this.resolveTopicArn(existingTopic)
     this.validateTopicArn({ topicArn, existingTopic })
-    const id = this.createTopicId(topicArn)
+    const id = this.createTopicId()
     return sns.Topic.fromTopicArn(this, id, topicArn)
   }
 
   private resolveTopicArn(
-    existingTopic: ExistingTopicArnOrName | ExistingTopicArnComponents
+    existingTopic: ExistingTopicArn | ExistingTopicArnComponents
   ): string {
     if (typeof existingTopic === 'string') {
-      if (!existingTopic.trim().length || existingTopic.includes(':')) {
-        return existingTopic
-      }
-      existingTopic = { resource: existingTopic }
+      return existingTopic
     }
     return cdk.Arn.format(
       { service: 'sns', ...existingTopic },
@@ -126,43 +120,23 @@ export class AwsSnsToDiscord extends cdk.Construct {
     existingTopic,
   }: {
     topicArn: string
-    existingTopic: ExistingTopicArnOrName | ExistingTopicArnComponents
+    existingTopic: ExistingTopicArn | ExistingTopicArnComponents
   }): void {
-    const displayString = JSON.stringify(existingTopic)
     if (!topicArn.length) {
       throw new Error('Invalid SNS topic. An empty string was provided.')
     }
-    if (topicArn.includes('*')) {
-      throw new Error(
-        `Invalid SNS topic ${displayString}. Wildcards not allowed.`
-      )
-    }
-    let arnComponents
-    try {
-      arnComponents = cdk.Arn.split(topicArn, cdk.ArnFormat.NO_RESOURCE_NAME)
-    } catch (e) {
-      const { message } = e as Error
-      throw message
-        ? new Error(`Invalid SNS topic ${displayString}. ${message}.`)
-        : e
-    }
-    if (arnComponents.service !== 'sns') {
-      throw new Error(
-        `Invalid SNS topic ${displayString}. Expected the service to be "sns".`
-      )
-    }
-    if (arnComponents.resourceName !== undefined) {
-      throw new Error(
-        `Invalid SNS topic ${displayString}. Expected the resource-name to be undefined.`
-      )
+    if (
+      !cdk.Token.isUnresolved(topicArn) &&
+      !topicArn.startsWith('arn:aws:sns:')
+    ) {
+      throw new Error(`Invalid SNS topic ${JSON.stringify(existingTopic)}.`)
     }
   }
 
-  private createTopicId(topicArn: string): string {
-    const { resource } = cdk.Arn.split(topicArn, cdk.ArnFormat.NO_RESOURCE_NAME)
+  private createTopicId(): string {
     let index = 0
     for (;;) {
-      const id = `SnsTopic-${resource}-${index}`
+      const id = `SnsTopic-${index}`
       if (this.topics.every((topic) => topic.node.id !== id)) {
         return id
       }

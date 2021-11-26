@@ -26,7 +26,7 @@ It recognizes these events from SNS:
 - Define the following environment variables:
 
   - `EXISTING_TOPICS`:  
-    Comma-separated list of SNS topic names or ARNs for which you want to produce Discord messages.
+    Comma-separated list of SNS topic names for which you want to produce Discord messages.
   - `DISCORD_WEBHOOK_URLS`:  
     Comma separated list of Discord webhook URLs for the channels that will receive those messages.  
     To make a Discord webhook, see https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
