@@ -1,16 +1,26 @@
-import * as lambda from '@aws-cdk/aws-lambda'
-import { SnsEventSource } from '@aws-cdk/aws-lambda-event-sources'
-import * as lambdaNodejs from '@aws-cdk/aws-lambda-nodejs'
-import * as logs from '@aws-cdk/aws-logs'
-import * as sns from '@aws-cdk/aws-sns'
-import * as cdk from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import {
+  Arn,
+  ArnComponents,
+  Duration,
+  Stack,
+  Token,
+  aws_lambda,
+  aws_lambda_event_sources,
+  aws_lambda_nodejs,
+  aws_logs,
+  aws_sns,
+} from 'aws-cdk-lib'
 
 import { validateDiscordConfig } from './discord'
 
-type ExistingTopic = sns.ITopic | ExistingTopicArn | ExistingTopicArnComponents
+type ExistingTopic =
+  | aws_sns.ITopic
+  | ExistingTopicArn
+  | ExistingTopicArnComponents
 type ExistingTopicArn = string
 type ExistingTopicArnComponents = Omit<
-  cdk.ArnComponents,
+  ArnComponents,
   'service' | 'resourceName'
 >
 
@@ -41,17 +51,17 @@ export interface AwsSnsToDiscordProps {
    *
    * @default - Default properties are used.
    */
-  readonly lambdaFunctionProps?: lambdaNodejs.NodejsFunctionProps
+  readonly lambdaFunctionProps?: aws_lambda_nodejs.NodejsFunctionProps
 }
 
 /**
  * @summary The AwsSnsToDiscord class.
  */
-export class AwsSnsToDiscord extends cdk.Construct {
-  public readonly lambdaFunction: lambdaNodejs.NodejsFunction
-  public readonly topics: sns.ITopic[] = []
+export class AwsSnsToDiscord extends Construct {
+  public readonly lambdaFunction: aws_lambda_nodejs.NodejsFunction
+  public readonly topics: aws_sns.ITopic[] = []
 
-  constructor(scope: cdk.Construct, id: string, props: AwsSnsToDiscordProps) {
+  constructor(scope: Construct, id: string, props: AwsSnsToDiscordProps) {
     super(scope, id)
 
     // Validation
@@ -63,15 +73,15 @@ export class AwsSnsToDiscord extends cdk.Construct {
     validateDiscordConfig(props)
 
     // Lambda function bundled using esbuild
-    this.lambdaFunction = new lambdaNodejs.NodejsFunction(this, 'lambda', {
-      runtime: lambda.Runtime.NODEJS_14_X,
+    this.lambdaFunction = new aws_lambda_nodejs.NodejsFunction(this, 'lambda', {
+      runtime: aws_lambda.Runtime.NODEJS_14_X,
       environment: {
         DISCORD_WEBHOOK_URLS: props.discordWebhookUrls.join(' '),
         NODE_OPTIONS: '--enable-source-maps',
         ...props.lambdaFunctionProps?.environment,
       },
-      logRetention: logs.RetentionDays.ONE_MONTH,
-      timeout: cdk.Duration.minutes(1),
+      logRetention: aws_logs.RetentionDays.ONE_MONTH,
+      timeout: Duration.minutes(1),
       bundling: {
         sourceMap: true,
         target: 'es2020',
@@ -88,19 +98,21 @@ export class AwsSnsToDiscord extends cdk.Construct {
     // Subscribe to existing SNS topics (optional)
     for (const existingTopic of props.existingTopics ?? []) {
       const topic = this.resolveTopic(existingTopic)
-      this.lambdaFunction.addEventSource(new SnsEventSource(topic))
+      this.lambdaFunction.addEventSource(
+        new aws_lambda_event_sources.SnsEventSource(topic)
+      )
       this.topics.push(topic)
     }
   }
 
-  private resolveTopic(existingTopic: ExistingTopic): sns.ITopic {
+  private resolveTopic(existingTopic: ExistingTopic): aws_sns.ITopic {
     if (typeof existingTopic === 'object' && 'topicArn' in existingTopic) {
       return existingTopic
     }
     const topicArn = this.resolveTopicArn(existingTopic)
     this.validateTopicArn({ topicArn, existingTopic })
     const id = this.createTopicId()
-    return sns.Topic.fromTopicArn(this, id, topicArn)
+    return aws_sns.Topic.fromTopicArn(this, id, topicArn)
   }
 
   private resolveTopicArn(
@@ -109,10 +121,7 @@ export class AwsSnsToDiscord extends cdk.Construct {
     if (typeof existingTopic === 'string') {
       return existingTopic
     }
-    return cdk.Arn.format(
-      { service: 'sns', ...existingTopic },
-      cdk.Stack.of(this)
-    )
+    return Arn.format({ service: 'sns', ...existingTopic }, Stack.of(this))
   }
 
   private validateTopicArn({
@@ -125,10 +134,7 @@ export class AwsSnsToDiscord extends cdk.Construct {
     if (!topicArn.length) {
       throw new Error('Invalid SNS topic. An empty string was provided.')
     }
-    if (
-      !cdk.Token.isUnresolved(topicArn) &&
-      !topicArn.startsWith('arn:aws:sns:')
-    ) {
+    if (!Token.isUnresolved(topicArn) && !topicArn.startsWith('arn:aws:sns:')) {
       throw new Error(`Invalid SNS topic ${JSON.stringify(existingTopic)}.`)
     }
   }

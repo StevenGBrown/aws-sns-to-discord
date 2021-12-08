@@ -1,9 +1,10 @@
-import * as cdk from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { App, Stack } from 'aws-cdk-lib'
 
 import { AwsSnsToDiscord } from '../lib'
 
-class AwsSnsToDiscordStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string) {
+class AwsSnsToDiscordStack extends Stack {
+  constructor(scope: Construct, id: string) {
     super(scope, id, {
       description: 'https://github.com/StevenGBrown/aws-sns-to-discord',
     })
@@ -19,6 +20,6 @@ class AwsSnsToDiscordStack extends cdk.Stack {
 }
 
 if (!process.env.npm_lifecycle_script?.includes('cdk "bootstrap"')) {
-  const app = new cdk.App()
+  const app = new App()
   new AwsSnsToDiscordStack(app, 'AwsSnsToDiscordStack')
 }

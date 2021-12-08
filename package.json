@@ -24,12 +24,8 @@
     "lint": "tsc --noEmit && eslint . --max-warnings 0 --ext .js,.ts"
   },
   "dependencies": {
-    "@aws-cdk/aws-lambda": "1.130.0",
-    "@aws-cdk/aws-lambda-event-sources": "1.130.0",
-    "@aws-cdk/aws-lambda-nodejs": "1.130.0",
-    "@aws-cdk/aws-logs": "1.130.0",
-    "@aws-cdk/aws-sns": "1.130.0",
-    "@aws-cdk/core": "1.130.0",
+    "aws-cdk-lib": "2.0.0",
+    "constructs": "10.0.10",
     "discord.js": "12.5.3",
     "lodash.get": "4.4.2"
   },
@@ -40,7 +36,7 @@
     "@types/ws": "8.2.0",
     "@typescript-eslint/eslint-plugin": "5.0.0",
     "@typescript-eslint/parser": "5.0.0",
-    "aws-cdk": "1.130.0",
+    "aws-cdk": "2.0.0",
     "esbuild": "0.13.8",
     "eslint": "7.28.0",
     "eslint-config-prettier": "8.3.0",
