@@ -74,7 +74,7 @@ export class AwsSnsToDiscord extends Construct {
 
     // Lambda function bundled using esbuild
     this.lambdaFunction = new aws_lambda_nodejs.NodejsFunction(this, 'lambda', {
-      runtime: aws_lambda.Runtime.NODEJS_14_X,
+      runtime: aws_lambda.Runtime.NODEJS_16_X,
       environment: {
         DISCORD_WEBHOOK_URLS: props.discordWebhookUrls.join(' '),
         NODE_OPTIONS: '--enable-source-maps',
