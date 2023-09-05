@@ -74,7 +74,7 @@ export class AwsSnsToDiscord extends Construct {
 
     // Lambda function bundled using esbuild
     this.lambdaFunction = new aws_lambda_nodejs.NodejsFunction(this, 'lambda', {
-      runtime: aws_lambda.Runtime.NODEJS_16_X,
+      runtime: aws_lambda.Runtime.NODEJS_18_X,
       environment: {
         DISCORD_WEBHOOK_URLS: props.discordWebhookUrls.join(' '),
         NODE_OPTIONS: '--enable-source-maps',
@@ -84,10 +84,10 @@ export class AwsSnsToDiscord extends Construct {
       timeout: Duration.minutes(1),
       bundling: {
         sourceMap: true,
-        target: 'es2020',
+        target: 'es2021',
         // Dependencies to exclude from the build
         externalModules: [
-          'aws-sdk', // already available in the lambda runtime
+          '@aws-sdk/', // already available in the lambda runtime
           'ffmpeg-static', // dependency of discord.js that isn't used at runtime
         ],
         ...props.lambdaFunctionProps?.bundling,

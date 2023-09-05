@@ -10,7 +10,7 @@ It recognizes these events from SNS:
 ## Requirements
 
 - AWS account and credentials
-- Node 16
+- Node 18
 - npm 7
 
 ## How to deploy to AWS
