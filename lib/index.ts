@@ -73,14 +73,22 @@ export class AwsSnsToDiscord extends Construct {
     validateDiscordConfig(props)
 
     // Lambda function bundled using esbuild
+    const { functionName } = {
+      functionName: 'aws-sns-to-discord',
+      ...props.lambdaFunctionProps,
+    }
     this.lambdaFunction = new aws_lambda_nodejs.NodejsFunction(this, 'lambda', {
+      functionName,
       runtime: aws_lambda.Runtime.NODEJS_18_X,
       environment: {
         DISCORD_WEBHOOK_URLS: props.discordWebhookUrls.join(' '),
         NODE_OPTIONS: '--enable-source-maps',
         ...props.lambdaFunctionProps?.environment,
       },
-      logRetention: aws_logs.RetentionDays.ONE_MONTH,
+      logGroup: new aws_logs.LogGroup(this, 'lambda-logGroup', {
+        logGroupName: functionName ? `/aws/lambda/${functionName}` : undefined,
+        retention: aws_logs.RetentionDays.ONE_MONTH,
+      }),
       timeout: Duration.minutes(1),
       bundling: {
         sourceMap: true,
