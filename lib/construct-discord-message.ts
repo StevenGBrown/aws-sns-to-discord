@@ -48,7 +48,7 @@ function discordMessageForAwsHealth(
   }
 }
 
-function parseSnsMessage(record: SNSEventRecord): unknown | undefined {
+function parseSnsMessage(record: SNSEventRecord): unknown {
   try {
     return JSON.parse(record.Sns.Message) as unknown
   } catch (e) {
