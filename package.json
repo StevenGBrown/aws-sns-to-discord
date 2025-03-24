@@ -24,7 +24,7 @@
     "lint": "tsc --noEmit && eslint . --max-warnings 0 --ext .js,.ts"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.177.0",
+    "aws-cdk-lib": "2.184.0",
     "constructs": "10.4.2",
     "discord.js": "12.5.3",
     "lodash.get": "4.4.2"
