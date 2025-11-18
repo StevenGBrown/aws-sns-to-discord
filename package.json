@@ -24,8 +24,8 @@
     "lint": "tsc --noEmit && eslint . --max-warnings 0 --ext .js,.ts"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.189.1",
-    "constructs": "10.4.2",
+    "aws-cdk-lib": "2.225.0",
+    "constructs": "10.4.3",
     "discord.js": "12.5.3",
     "lodash.get": "4.4.2"
   },
@@ -36,7 +36,7 @@
     "@types/ws": "8.2.0",
     "@typescript-eslint/eslint-plugin": "6.19.1",
     "@typescript-eslint/parser": "6.19.1",
-    "aws-cdk": "2.1006.0",
+    "aws-cdk": "2.1032.0",
     "esbuild": "0.25.0",
     "eslint": "7.28.0",
     "eslint-config-prettier": "8.3.0",
