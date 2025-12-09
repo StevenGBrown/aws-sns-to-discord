@@ -28,11 +28,10 @@ export async function sendDiscordMessage({
   config: DiscordConfig
   message: DiscordMessage
 }): Promise<void> {
-  const content = getContent(message)
   const options = getOptions(message)
 
   const tasks = config.discordWebhookUrls.map((webhookUrl) =>
-    send({ webhookUrl, content, options })
+    send({ webhookUrl, options })
   )
   const results = await Promise.allSettled(tasks)
   if (results.some((result) => result.status === 'rejected')) {
@@ -41,12 +40,22 @@ export async function sendDiscordMessage({
 }
 
 function createWebhookClient(webhookUrl: string): discordjs.WebhookClient {
-  const match = webhookUrl.match(/\/([^/]+)\/([^/]+)$/i)
+  const match = /\/([^/]+)\/([^/]+)$/i.exec(webhookUrl)
   if (!match) {
     throw new Error(`Invalid Discord webhook URL: "${webhookUrl}"`)
   }
   const [id, token] = match.slice(1)
-  return new discordjs.WebhookClient(id, token)
+  return new discordjs.WebhookClient({ id, token })
+}
+
+function getOptions(
+  message: DiscordMessage
+): discordjs.WebhookMessageCreateOptions {
+  const { files } = message
+  return {
+    content: getContent(message),
+    ...(files?.length ? { files: [...files] } : {}),
+  }
 }
 
 function getContent(message: DiscordMessage): string {
@@ -62,25 +71,16 @@ function getContent(message: DiscordMessage): string {
   return content.substring(0, newLength) + ellipsis
 }
 
-function getOptions(message: DiscordMessage): discordjs.WebhookMessageOptions {
-  const { files } = message
-  return {
-    ...(files?.length ? { files: [...files] } : {}),
-  }
-}
-
 async function send({
   webhookUrl,
-  content,
   options,
 }: {
   webhookUrl: string
-  content: string
-  options: discordjs.WebhookMessageOptions
+  options: discordjs.WebhookMessageCreateOptions
 }): Promise<void> {
   const webhookClient = createWebhookClient(webhookUrl)
   try {
-    await webhookClient.send(content, options)
+    await webhookClient.send(options)
   } finally {
     webhookClient.destroy()
   }

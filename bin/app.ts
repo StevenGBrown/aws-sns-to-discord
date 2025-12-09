@@ -1,7 +1,7 @@
 import { Construct } from 'constructs'
 import { App, Stack } from 'aws-cdk-lib'
 
-import { AwsSnsToDiscord } from '../lib'
+import { AwsSnsToDiscord } from '../lib/index.js'
 
 class AwsSnsToDiscordStack extends Stack {
   constructor(scope: Construct, id: string) {

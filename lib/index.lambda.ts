@@ -1,19 +1,19 @@
-import { SNSHandler } from 'aws-lambda'
+import type { SNSEvent } from 'aws-lambda'
 
-import { constructDiscordMessage } from './construct-discord-message'
+import { constructDiscordMessage } from './construct-discord-message.js'
 import {
-  DiscordConfig,
+  type DiscordConfig,
   validateDiscordConfig,
   sendDiscordMessage,
-} from './discord'
+} from './discord.js'
 
-export const handler: SNSHandler = async (event) => {
+export async function handler(event: SNSEvent | undefined) {
   console.log(`\n${JSON.stringify(event, null, 2)}`)
 
   const config = getDiscordConfig()
   validateDiscordConfig(config)
 
-  for (const record of event.Records ?? []) {
+  for (const record of event?.Records ?? []) {
     const message = constructDiscordMessage(record)
     if (message) {
       await sendDiscordMessage({ config, message })

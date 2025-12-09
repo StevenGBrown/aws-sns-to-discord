@@ -10,8 +10,8 @@ It recognizes these events from SNS:
 ## Requirements
 
 - AWS account and credentials
-- Node 20
-- npm 7
+- Node 24 or higher
+- npm 9 or higher
 
 ## How to deploy to AWS
 

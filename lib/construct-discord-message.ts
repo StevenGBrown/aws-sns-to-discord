@@ -1,7 +1,7 @@
-import { SNSEventRecord } from 'aws-lambda'
-import get = require('lodash.get')
+import type { SNSEventRecord } from 'aws-lambda'
+import { get } from 'lodash'
 
-import { DiscordMessage, MAX_CONTENT_LENGTH } from './discord'
+import { type DiscordMessage, MAX_CONTENT_LENGTH } from './discord.js'
 
 export function constructDiscordMessage(
   record: SNSEventRecord
@@ -51,7 +51,7 @@ function discordMessageForAwsHealth(
 function parseSnsMessage(record: SNSEventRecord): unknown {
   try {
     return JSON.parse(record.Sns.Message) as unknown
-  } catch (e) {
+  } catch {
     // not in JSON format
   }
 }
