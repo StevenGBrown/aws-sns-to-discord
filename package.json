@@ -28,7 +28,7 @@
     "aws-cdk-lib": "2.232.1",
     "constructs": "10.4.3",
     "discord.js": "14.25.1",
-    "lodash": "4.17.21"
+    "lodash": "4.17.23"
   },
   "devDependencies": {
     "@eslint/compat": "2.0.0",
