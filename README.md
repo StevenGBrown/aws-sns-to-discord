@@ -20,11 +20,9 @@ It recognizes these events from SNS:
 
 - `git clone https://github.com/StevenGBrown/aws-sns-to-discord`
 - `cd aws-sns-to-discord`
-- `npm install`
 - `npm run bootstrap` (if you haven't used the AWS CDK in this account/region before)
 
 - Define the following environment variables:
-
   - `EXISTING_TOPICS`:  
     Comma-separated list of SNS topic names for which you want to produce Discord messages.
   - `DISCORD_WEBHOOK_URLS`:  
@@ -41,6 +39,12 @@ VSCode recommended.
 
 ## Commands
 
+- `npm run init`  
+  Run when first cloning the repository or when checking out a different commit.
+
+- `npm run check`  
+  Check all the things, e.g. linting and tests.
+
 - `npm run bootstrap`  
   Bootstrap the AWS CDK in your default AWS account/region.  
   https://docs.aws.amazon.com/cdk/latest/guide/cli.html#cli-bootstrap
@@ -48,9 +52,5 @@ VSCode recommended.
 - `npm run deploy`  
   Deploy the app to your default AWS account/region.
 
-- `npm run cdk -- COMMAND ARGUMENTS...`  
-  Run an AWS CDK Toolkit command.  
-  See: https://docs.aws.amazon.com/cdk/latest/guide/cli.html
-
-- `npm run lint`  
-  Run type-checking and the linter over the code.
+- `npm run upgrade`  
+  Upgrade the dependencies.

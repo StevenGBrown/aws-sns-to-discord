@@ -19,10 +19,14 @@
     "url": "https://github.com/StevenGBrown/aws-sns-to-discord.git"
   },
   "scripts": {
-    "cdk": "cdk",
-    "bootstrap": "cdk bootstrap",
-    "deploy": "npm run lint && cdk deploy",
-    "lint": "tsc --noEmit && eslint . --max-warnings 0"
+    "init": "npm ci --no-audit --no-fund",
+    "bootstrap": "node --run init && npx cdk bootstrap",
+    "deploy": "node --run check && npx cdk deploy",
+    "check": "node --run init && npx run-s \"check:**\"",
+    "check:types": "tsc --noEmit",
+    "check:lint": "eslint . --max-warnings 0",
+    "check:cdk": "DISCORD_WEBHOOK_URLS=/a/b cdk synth",
+    "upgrade": "npx taze major --include-locked --write && npm install && node --run fix"
   },
   "dependencies": {
     "aws-cdk-lib": "2.241.0",
@@ -42,6 +46,8 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-security": "3.0.1",
+    "npm-run-all2": "8.0.4",
+    "taze": "19.10.0",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.49.0"
