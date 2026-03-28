@@ -39,7 +39,7 @@ VSCode recommended.
 
 ## Commands
 
-- `npm run init`  
+- `npm run build`  
   Run when first cloning the repository or when checking out a different commit.
 
 - `npm run check`  

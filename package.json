@@ -19,10 +19,10 @@
     "url": "https://github.com/StevenGBrown/aws-sns-to-discord.git"
   },
   "scripts": {
-    "init": "npm ci --no-audit --no-fund",
-    "bootstrap": "node --run init && npx cdk bootstrap",
+    "build": "npm ci --no-audit --no-fund",
+    "bootstrap": "node --run build && npx cdk bootstrap",
     "deploy": "node --run check && npx cdk deploy",
-    "check": "node --run init && npx run-s \"check:**\"",
+    "check": "node --run build && npx run-s \"check:**\"",
     "check:types": "tsc --noEmit",
     "check:lint": "eslint . --max-warnings 0",
     "check:cdk": "DISCORD_WEBHOOK_URLS=/a/b cdk synth",
