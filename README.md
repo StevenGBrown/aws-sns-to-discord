@@ -52,5 +52,5 @@ VSCode recommended.
 - `npm run deploy`  
   Deploy the app to your default AWS account/region.
 
-- `npm run upgrade`  
-  Upgrade the dependencies.
+- `npm run update-deps`  
+  Update the dependencies.
