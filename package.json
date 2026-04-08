@@ -29,8 +29,8 @@
     "update-deps": "npm-check-updates --upgrade --peer --install never && del-cli package-lock.json && npm install"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.245.0",
-    "constructs": "10.5.1",
+    "aws-cdk-lib": "2.248.0",
+    "constructs": "10.6.0",
     "discord.js": "14.26.0",
     "lodash": "4.17.23"
   },
@@ -40,7 +40,7 @@
     "@types/lodash": "4.17.21",
     "@types/node": "24.10.2",
     "@types/ws": "8.2.0",
-    "aws-cdk": "2.1108.0",
+    "aws-cdk": "2.1117.0",
     "del-cli": "7.0.0",
     "esbuild": "0.25.0",
     "eslint": "9.39.1",
