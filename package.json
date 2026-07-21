@@ -46,7 +46,7 @@
     "eslint": "10.7.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
-    "eslint-plugin-security": "3.0.1",
+    "eslint-plugin-security": "4.0.1",
     "npm-run-all2": "8.0.4",
     "tsx": "4.22.4",
     "typescript": "5.9.3",
